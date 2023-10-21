@@ -442,6 +442,8 @@ extern "C" {
         void * logits_filter_callback_user_data;
     };
 
+    WHISPER_API void whisper_stop();
+
     // NOTE: this function allocates memory, and it is the responsibility of the caller to free the pointer - see whisper_free_params()
     WHISPER_API struct whisper_full_params * whisper_full_default_params_by_ref(enum whisper_sampling_strategy strategy);
     WHISPER_API struct whisper_full_params whisper_full_default_params(enum whisper_sampling_strategy strategy);
