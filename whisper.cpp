@@ -41,6 +41,7 @@
 #include <regex>
 #include <random>
 #include <functional>
+#include <atomic>
 
 #if defined(_MSC_VER)
 #pragma warning(disable: 4244 4267) // possible loss of data
@@ -5213,6 +5214,8 @@ static void whisper_sequence_score(
     }
 }
 
+std::atomic<bool> requestStop(false);
+
 int whisper_full_with_state(
         struct whisper_context * ctx,
           struct whisper_state * state,
@@ -5409,6 +5412,9 @@ int whisper_full_with_state(
 
     // main loop
     while (true) {
+        if( requestStop.load()) {
+            return 0;
+        }
         if (params.progress_callback) {
             const int progress_cur = (100*(seek - seek_start))/(seek_end - seek_start);
 
@@ -6082,6 +6088,11 @@ int whisper_full_with_state(
     }
 
     return 0;
+}
+
+void whisper_stop()
+{
+    requestStop = true;
 }
 
 int whisper_full(
