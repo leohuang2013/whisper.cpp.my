@@ -5413,6 +5413,7 @@ int whisper_full_with_state(
     // main loop
     while (true) {
         if( requestStop.load()) {
+            requestStop.store( false );
             return 0;
         }
         if (params.progress_callback) {
