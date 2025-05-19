@@ -587,6 +587,7 @@ extern "C" {
         whisper_vad_params vad_params;
     };
 
+    WHISPER_API void whisper_stop();
     // NOTE: this function allocates memory, and it is the responsibility of the caller to free the pointer - see whisper_free_context_params & whisper_free_params()
     WHISPER_API struct whisper_context_params * whisper_context_default_params_by_ref(void);
     WHISPER_API struct whisper_context_params   whisper_context_default_params       (void);

@@ -6724,6 +6724,8 @@ static bool whisper_vad(
     return true;
 }
 
+std::atomic<bool> requestStop(false);
+
 int whisper_full_with_state(
         struct whisper_context * ctx,
           struct whisper_state * state,
@@ -6934,6 +6936,10 @@ int whisper_full_with_state(
 
     // main loop
     while (true) {
+        if( requestStop.load()) {
+            requestStop.store( false );
+            return 0;
+        }
         if (params.progress_callback) {
             const int progress_cur = (100*(seek - seek_start))/(seek_end - seek_start);
 
@@ -7660,6 +7666,11 @@ int whisper_full_with_state(
     return 0;
 }
 
+void whisper_stop()
+{
+    requestStop = true;
+}
+
 int whisper_full(
         struct whisper_context * ctx,
     struct whisper_full_params   params,
@@ -8147,6 +8158,7 @@ WHISPER_API const char * whisper_bench_memcpy_str(int n_threads) {
 
     return s.c_str();
 }
+
 
 WHISPER_API int whisper_bench_ggml_mul_mat(int n_threads) {
     fputs(whisper_bench_ggml_mul_mat_str(n_threads), stderr);
